@@ -1,0 +1,53 @@
+> init
+<<<
+D DATE "Date: \w\w\w \w\w\w \d+ \d\d:\d\d:\d\d \d\d\d\d [-+]\d\d\d\d"
+# A status log header RE.  Captures the commit id in its sole group.
+D COMMIT_HEAD "commit ([a-f0-9]+)[ \t]*\n(?:Merge:\s+[0-9a-f]{7}\s+[0-9a-f]{7}[ ]*\n)?${DATE}"
+# A full log entry.  Captures the entry. Assume logs messages don't contain
+# "==="
+D COMMIT_LOG "(===[ ]*\ncommit [a-f0-9]+[ ]*\n(?:Merge:\s+[0-9a-f]{7}\s+[0-9a-f]{7}[ ]*\n)?${DATE}[ ]*\n(?:.|\n)*?(?=\Z|\n===))"
+# An arbitrary line of text (works even with ?s)
+D ARBLINE "[^\n]*(?=\n|\Z)"
+# Zero or more arbitrary full lines of text.
+D ARBLINES "(?:(?:.|\n)*(?:\n|\Z)|\A|\Z)"
++ a.txt wug.txt
++ b.txt wug2.txt
+> add a.txt
+<<<
+> add b.txt
+<<<
+> commit "add a n' b!"
+<<<
+> branch lemon
+<<<
+> rm a.txt
+<<<
+> rm b.txt
+<<<
+> commit "evil remove"
+<<<
+> branch apple
+<<<
+> checkout apple
+<<<
++ a.txt notwug.txt
+> add a.txt
+<<<
+> commit "evil wug"
+<<<
+= a.txt notwug.txt
+* b.txt
+> checkout lemon
+<<<
+= a.txt wug.txt
+= b.txt wug2.txt
++ a.txt wug3.txt
+> add a.txt
+<<<
+> commit "a is wug3"
+<<<
+> merge apple
+Encountered a merge conflict.
+<<<
+* b.txt
+= a.txt wugs-collide.txt
